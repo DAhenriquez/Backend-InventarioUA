@@ -1,59 +1,139 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Backend - Sistema de Inventario ICINF UA
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Este es el backend del sistema de inventarioUA desarrollado en **Laravel 11** utilizando **SQLite** como base de datos. Provee una API REST protegida con **Sanctum** para gestionar componentes, préstamos y usuarios.
 
-## About Laravel
+## Requisitos Previos
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Asegúrate de tener instalado en tu computadora:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+  * [PHP](https://www.php.net/) (Versión 8.2 o superior)
+  * [Composer](https://getcomposer.org/)
+  * [Git](https://git-scm.com/)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+-----
 
-## Learning Laravel
+## Cómo Instalar 
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+1.  **Clonar el repositorio:**
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+    ```bash
+    git clone https://github.com/DAhenriquez/Backend-InventarioUA.git
+    cd Backend-InventarioUA
+    ```
 
-## Laravel Sponsors
+2.  **Instalar dependencias de PHP:**
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+    ```bash
+    composer install
+    ```
 
-### Premium Partners
+3.  **Configurar el entorno:**
+    Duplica el archivo de ejemplo y nómbralo `.env`:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+    ```bash
+    cp .env.example .env
+    ```
 
-## Contributing
+4.  **Configurar Base de Datos (SQLite):**
+    Abre el archivo `.env` y busca la sección de base de datos. Modifícala para que quede así (borra las configuraciones de MySQL):
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+    ```ini
+    DB_CONNECTION=sqlite
+    # DB_HOST=127.0.0.1
+    # DB_PORT=3306
+    # ... borra el resto de líneas DB_ ...
+    ```
 
-## Code of Conduct
+    Luego, crea el archivo de base de datos vacío:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+      - **En Mac/Linux:** `touch database/database.sqlite`
+      - **En Windows:** Crea un archivo vacío llamado `database.sqlite` dentro de la carpeta `database`.
 
-## Security Vulnerabilities
+5.  **Generar clave de aplicación:**
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+    ```bash
+    php artisan key:generate
+    ```
 
-## License
+-----
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Cómo ejecutar Migraciones y Seeds
+
+Para crear las tablas e insertar los datos de prueba (Usuario Admin, Alumnos y Componentes), ejecuta:
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+> **Importante!!!:** Este comando borra la base de datos y la vuelve a crear desde cero. Úsalo con cuidado si ya tienes datos reales.
+
+### Credenciales por defecto (Admin)
+
+Al ejecutar el comando anterior, se crea el siguiente usuario administrador para hacer login:
+
+  * **Email:** `admin@admin`
+  * **Contraseña:** `admin`
+
+-----
+
+## Cómo levantar el servidor
+
+Para iniciar el servidor de desarrollo local:
+
+```bash
+php artisan serve
+```
+
+El backend estará disponible en: `http://127.0.0.1:8000`
+
+-----
+
+## Documentación de la API
+
+Todas las rutas (excepto Login) requieren que envíes el **Token** en el Header de la petición:
+
+  * **Header:** `Authorization`
+  * **Valor:** `Bearer <tu_token_aqui>`
+  * **Header:** `Accept: application/json`
+
+### Autenticación
+
+| Método | Endpoint | Descripción | Cuerpo (JSON) |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/login` | Iniciar sesión y obtener Token | `{ "email": "...", "password": "..." }` |
+| `POST` | `/api/logout` | Cerrar sesión (revocar token) | *(Requiere Token)* |
+
+### Inventario (Componentes)
+
+| Método | Endpoint | Descripción |
+| :--- | :--- | :--- |
+| `GET` | `/api/componentes` | Obtener lista de todos los componentes y su stock. |
+| `POST` | `/api/componentes` | Crear un nuevo componente. Requiere JSON con `nombre`, `cantidad`, `inventario`, `imagen` (url o nombre archivo). |
+
+### Préstamos
+
+| Método | Endpoint | Descripción |
+| :--- | :--- | :--- |
+| `GET` | `/api/prestamos` | Ver lista de préstamos activos. |
+| `POST` | `/api/prestamos` | Crear un préstamo (Resta stock automáticamente). Body: `{ "rut": "...", "component_id": 1, "cantidad": 1 }` |
+| `PUT` | `/api/prestamos/{id}/devolver` | Marcar como devuelto (Suma stock automáticamente). |
+
+### Dashboard y Usuarios
+
+| Método | Endpoint | Descripción |
+| :--- | :--- | :--- |
+| `GET` | `/api/users` | Lista de todos los usuarios registrados (Alumnos y Admins). |
+| `GET` | `/api/bajas` | Lista de componentes eliminados/dados de baja. |
+
+-----
+
+## Deploy (Koyeb)
+
+Este proyecto está configurado para desplegarse en **Koyeb** usando Buildpacks.
+Asegúrate de configurar las siguientes **Variables de Entorno** en el panel de Koyeb:
+
+  * `APP_KEY`: (Copia la de tu .env local)
+  * `DB_CONNECTION`: `sqlite`
+  * `DB_DATABASE`: `database/database.sqlite`
+  * `SESSION_DRIVER`: `file`
+  * **Run Command:** `touch database/database.sqlite && php artisan migrate:fresh --seed --force && php artisan serve --host=0.0.0.0 --port=8000`
